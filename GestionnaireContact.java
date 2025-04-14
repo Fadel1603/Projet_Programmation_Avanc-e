@@ -138,31 +138,34 @@ public class GestionnaireContacts {
     }
 
     // Modifie les infos d'un contact en le recherchant par nom
-    public void modifierContact(String nom) {
-        String sqlCheck = "SELECT * FROM contact WHERE telephone = ?";
-        String sqlUpdate = "UPDATE contact SET nom = ?, prenom = ?, telephone = ?, email = ?, categorie = ? WHERE nom = ?";
+    public void modifierContact(int id_contact) {
+        String sqlCheck = "SELECT * FROM contact WHERE id_contact = ?";
+        String sqlUpdate = "UPDATE contact SET nom = ?, prenom = ?, telephone = ?, email = ?, categorie = ? WHERE id_contact = ?";
 
         try (Connection conn = connecter();
              PreparedStatement checkStmt = conn.prepareStatement(sqlCheck);
              PreparedStatement updateStmt = conn.prepareStatement(sqlUpdate)) {
 
-            checkStmt.setString(1, nom); // Erreur ici, il faudrait chercher par nom
+            checkStmt.setInt(1, id_contact);
             ResultSet rs = checkStmt.executeQuery();
 
             if (!rs.next()) {
-                System.out.println("Aucun contact trouvé avec ce nom.");
+                System.out.println("Aucun contact trouvé avec cet ID.");
                 return;
             }
 
             Scanner scanner = new Scanner(System.in);
             System.out.println("Contact trouvé. Entrez les nouvelles informations :");
 
-            System.out.print("Nouveau prénom    : ");
+            System.out.print("Nouveau nom        : ");
+            String nom = scanner.nextLine();
+
+            System.out.print("Nouveau prénom     : ");
             String prenom = scanner.nextLine();
 
             int tel;
             while (true) {
-                System.out.print("Nouveau téléphone : ");
+                System.out.print("Nouveau téléphone  : ");
                 try {
                     tel = Integer.parseInt(scanner.nextLine());
                     break;
@@ -173,7 +176,7 @@ public class GestionnaireContacts {
 
             String email;
             while (true) {
-                System.out.print("Email     : ");
+                System.out.print("Nouvel email       : ");
                 email = scanner.nextLine();
 
                 if (email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) break;
@@ -185,12 +188,12 @@ public class GestionnaireContacts {
             System.out.print("Nouvelle catégorie : ");
             String categorie = scanner.nextLine();
 
-            updateStmt.setString(1, nom);      // nouvelle valeur nom (manquante ici dans ton code)
+            updateStmt.setString(1, nom);
             updateStmt.setString(2, prenom);
             updateStmt.setInt(3, tel);
             updateStmt.setString(4, email);
             updateStmt.setString(5, categorie);
-            updateStmt.setString(6, nom);
+            updateStmt.setInt(6, id_contact);
 
             int updated = updateStmt.executeUpdate();
             if (updated > 0) {
@@ -204,4 +207,3 @@ public class GestionnaireContacts {
         }
     }
 }
-
