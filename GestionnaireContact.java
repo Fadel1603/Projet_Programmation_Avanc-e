@@ -142,10 +142,12 @@ public class GestionnaireContacts {
         String sqlCheck = "SELECT * FROM contact WHERE id_contact = ?";
         String sqlUpdate = "UPDATE contact SET nom = ?, prenom = ?, telephone = ?, email = ?, categorie = ? WHERE id_contact = ?";
 
+
         try (Connection conn = connecter();
              PreparedStatement checkStmt = conn.prepareStatement(sqlCheck);
              PreparedStatement updateStmt = conn.prepareStatement(sqlUpdate)) {
 
+            // Vérifier si le contact existe
             checkStmt.setInt(1, id_contact);
             ResultSet rs = checkStmt.executeQuery();
 
@@ -154,52 +156,97 @@ public class GestionnaireContacts {
                 return;
             }
 
+            // Affichage des informations actuelles du contact
+            System.out.println("Informations actuelles :");
+            System.out.println("Nom : " + rs.getString("nom"));
+            System.out.println("Prénom : " + rs.getString("prenom"));
+            System.out.println("Téléphone : " + rs.getInt("telephone"));
+            System.out.println("Email : " + rs.getString("email"));
+            System.out.println("Catégorie : " + rs.getString("categorie"));
+
+            // Demande des nouvelles informations
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Contact trouvé. Entrez les nouvelles informations :");
 
-            System.out.print("Nouveau nom        : ");
+            // Nom
+            System.out.print("Nouveau nom  (laisser vide pour garder l'actuel) : ");
             String nom = scanner.nextLine();
+            if (nom.isEmpty()) {
+                nom = rs.getNString("nom");
 
-            System.out.print("Nouveau prénom     : ");
-            String prenom = scanner.nextLine();
-
-            int tel;
-            while (true) {
-                System.out.print("Nouveau téléphone  : ");
-                try {
-                    tel = Integer.parseInt(scanner.nextLine());
-                    break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Entrez uniquement des chiffres pour le téléphone.");
-                }
             }
 
+
+            // Prénom
+            System.out.print("Nouveau prénom (laisser vide pour garder l'actuel) : ");
+            String prenom = scanner.nextLine();
+            if (prenom.isEmpty()) {
+                prenom = rs.getString("prenom");
+            }
+
+            // Téléphone
+            System.out.print("Nouveau téléphone (laisser vide pour garder l'actuel) :  ");
+            String telInput = scanner.nextLine();
+            int telephone = rs.getInt("telephone");
+            if (!telInput.isEmpty()) {
+                telephone = Integer.parseInt(telInput);
+            }
+
+            // Email
             String email;
             while (true) {
-                System.out.print("Nouvel email       : ");
+                System.out.print("Email (laisser vide pour garder l'actuel) : ");
                 email = scanner.nextLine();
 
+                // Si l'utilisateur laisse vide, on garde l'ancien
+                if (email.isEmpty()) {
+                    email = rs.getNString("email");
+                    break;
+                }
+
+                // Vérifie que le format est valide
                 if (email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) break;
 
                 System.out.println("Format d’email invalide. Réessayez.");
-                System.out.println("️Exemple valide : exemple@domaine.com");
+                System.out.println("Exemple valide : exemple@domaine.com");
             }
 
-            System.out.print("Nouvelle catégorie : ");
+
+            // Catégorie
+            System.out.print("Nouvelle catégorie (laisser vide pour garder l'actuel) : ");
             String categorie = scanner.nextLine();
+            if (categorie.isEmpty()) {
+                categorie = rs.getString("categorie");
+            }
 
-            updateStmt.setString(1, nom);
-            updateStmt.setString(2, prenom);
-            updateStmt.setInt(3, tel);
-            updateStmt.setString(4, email);
-            updateStmt.setString(5, categorie);
-            updateStmt.setInt(6, id_contact);
+            // Affichage de l'aperçu avant confirmation
+            System.out.println("Aperçu des modifications :");
+            System.out.println("Contact #" + rs.getInt("id_contact"));
+            System.out.println("Nom : " + nom);
+            System.out.println("Prénom : " + prenom);
+            System.out.println("Téléphone : " + telephone);
+            System.out.println("Email : " + email);
+            System.out.println("Catégorie : " + categorie);
 
-            int updated = updateStmt.executeUpdate();
-            if (updated > 0) {
-                System.out.println("Contact mis à jour avec succès.");
+            // Demander à l'utilisateur de confirmer la modification
+            System.out.print("Confirmer les modifications ? (O/N) : ");
+            String confirmation = scanner.nextLine();
+            if (confirmation.equalsIgnoreCase("O")) {
+                updateStmt.setString(1, nom);
+                updateStmt.setString(2, prenom);
+                updateStmt.setInt(3, telephone);
+                updateStmt.setString(4, email);
+                updateStmt.setString(5, categorie);
+                updateStmt.setInt(6, id_contact); 
+
+
+                int updated = updateStmt.executeUpdate();
+                if (updated > 0) {
+                    System.out.println("Contact mis à jour avec succès.");
+                } else {
+                    System.out.println("Échec de la mise à jour.");
+                }
             } else {
-                System.out.println("Échec de la mise à jour.");
+                System.out.println("Modification annulée.");
             }
 
         } catch (SQLException e) {
