@@ -1,1 +1,42 @@
+Ma contribution
+Dans ce projet, on nous demande de développer une application console en Java permettant de gérer une base de contacts personnels ou professionnels via une base de données MySQL.
+1	Les objectifs du projet 
+Les principales fonctionnalités de ce programme sont : 
+•	Connexion à la base de données MySQL (via saisie utilisateur/mot de passe)
+•	Affichage de tous les contacts enregistrés ;
+•	Ajout d'un nouveau contact ;
+•	Suppression d’un contact ;
+•	Recherche de contacts par mot-clé (nom, prénom, etc.) ;
+•	Modification d’un contact existant;
+•	Menu interactif simple dans la console ;
+
+2	La structure du projet
+•	Main.java : C’est la classe principale qui contient le menu principal, l’interaction utilisateur et les appels aux fonctions du gestionnaire.
+•	GestionnaireContacts.java : est la classe qui contient les méthodes liées aux opérations sur la base de données .
+•	Contact.java : est la classe représentant un contact avec ses attributs (nom, prénom, téléphone, email, catégorie).
+
+3	Connexion a la base de donnees
+ Pour se connecter à la BDD, l'utilisateur doit entrer son nom d’utilisateur et mot de passe MySQL lors de l'exécution. La connexion est faite avec JDBC.
+Ci-dessous le script utiliser pour la création de notre base de données
+drop database if exists Gestion_de_contacts;
+
+create database Gestion_de_contacts;
+use Gestion_de_contacts ;
+
+-- Création de la table contact
+CREATE TABLE Contact (
+id_contact int primary key auto_increment,
+Nom varchar(100),
+prenom varchar(120),
+categorie varchar(60),
+telephone varchar(50),
+email varchar(50) unique,
+adresse text,
+date_creation timestamp default current_timestamp
+   );
+Exécution du programme 
+Pour exécuter notre programme nous devons :
+1.	Compiler : java Main.java GestionnaireContacts.java Contact.java
+2.	Executer: java Main
+3.	Suivre les instructions dans la console.
 
