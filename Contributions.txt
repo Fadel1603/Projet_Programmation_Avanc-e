@@ -1,0 +1,13 @@
+Classe contact:
+ La création de cette classe contact consiste la première partie du projet. 
+ Dans cette partie, chaque contact contient des informations personnelles comme (nom, prenom, tel, email, catégorie)
+ C'est dans cette étape, ou on va définir comment les contacts seront représentés et manipuler dans notre programme.
+ 
+ Les différentes étapes que nous avons suivi:
+ Etape 1 : Nous avons commencé par importer l'interface Serializable du package java.io, elle va nous permettre de pouvoir sauvegarder les objets contenus dans contact 
+ensuitela classe pattern du package java.util.regex pour les contraintes qu'on veut utiliser au niveau de la saisie du email.
+ Etape 2 : Dans cette étape, nous avons défini les attributs pour contenir les données du contact.
+ Etape 3 : Aprés la définition des attributs c'est autour du constructeur ou va initialiser un contact avec les données lors de la création de l'objet.
+ Etape 4 : Ajout des méthodes getter pour accéder aux données.
+ Etape 5 : Ajout de la méthode getNomComplet() pour pouvoir retourner le nom complet.
+ Etape 6 : Et enfin la dernière étape c'est la redéfinitioon des méthodes, elle va nous permettre d'avoir un affichage clair et lisible des informations du contact dans notre console.
